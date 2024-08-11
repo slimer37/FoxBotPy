@@ -21,4 +21,4 @@ class Punner:
     async def process_message(self, msg: ChatMessage):
         if not self._should_make_pun(): return
         
-        await msg.chat.send_message(msg.room, self._form_pun(msg.text))
+        await msg.reply(self._form_pun(msg.text))
