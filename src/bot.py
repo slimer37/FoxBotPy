@@ -6,44 +6,48 @@ from twitchAPI.chat import Chat, EventData, ChatMessage
 from typing import List, Tuple
 
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
-TARGET_CHANNEL = None
 
-async def on_ready(ready_event: EventData):
-    print('Bot is ready.')
-    
-    await ready_event.chat.join_room(TARGET_CHANNEL)
-    
-    print(f'Connected to {TARGET_CHANNEL}.')
-    
-async def on_message(msg: ChatMessage):
-    print(f'{msg.user.name}: {msg.text}')
+class Bot:
+    def __init__(self, id, secret, channel):
+        global TARGET_CHANNEL
+        
+        self.id = id
+        self.channel = channel
+        self.secret = secret
 
-async def startup(id, secret, channel):
-    
-    global TARGET_CHANNEL
-    
-    TARGET_CHANNEL = channel
+    async def on_ready(self, ready_event: EventData):
+        print('Bot is ready.')
+        
+        await ready_event.chat.join_room(self.channel)
+        
+        print(f'Connected to {self.channel}.')
+        
+    async def on_message(self, msg: ChatMessage):
+        print(f'{msg.user.name}: {msg.text}')
+        
+    async def start(self):
+        # Log in
+        twitch = await Twitch(self.id, self.secret)
+        
+        self.twitch = twitch
 
-    # Log in
-    twitch = await Twitch(id, secret)
-
-    helper = UserAuthenticationStorageHelper(twitch, USER_SCOPE, auth_generator_func=custom_auth_gen)
-    
-    await helper.bind()
-    
-    # Set up chat
-    chat = await Chat(twitch)
-    
-    chat.register_event(ChatEvent.READY, on_ready)
-    chat.register_event(ChatEvent.MESSAGE, on_message)
-    
-    chat.start()
-    
-    try:
-        input('Press ENTER any time to stop\n')
-    finally:
-        chat.stop()
-        await twitch.close()
+        helper = UserAuthenticationStorageHelper(twitch, USER_SCOPE, auth_generator_func=custom_auth_gen)
+        
+        await helper.bind()
+        
+        # Set up chat
+        chat = await Chat(twitch)
+        
+        chat.register_event(ChatEvent.READY, self.on_ready)
+        chat.register_event(ChatEvent.MESSAGE, self.on_message)
+        
+        chat.start()
+        
+        self.chat = chat
+        
+    async def stop(self):
+        self.chat.stop()
+        await self.twitch.close()
 
 async def custom_auth_gen(twitch: 'Twitch', scopes: List[AuthScope]) -> Tuple[str, str]:
     auth = UserAuthenticator(twitch, scopes, force_verify=True)

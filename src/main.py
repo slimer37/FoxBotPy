@@ -1,8 +1,8 @@
 import asyncio
-import bot
+from bot import Bot
 import config as conf
 
-def main():
+async def main():
     config = conf.read_config()
     
     if config is None:
@@ -13,7 +13,15 @@ def main():
     secret = config['Client']['Secret']
     channel = config['User']['TargetChannel']
     
-    asyncio.run(bot.startup(id, secret, channel))
+    bot = Bot(id, secret, channel)
+    
+    await bot.start()
+    
+    try:
+        input('Press enter at any time to stop.\n')
+    finally:
+        print('Stopping...')
+        await bot.stop()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
