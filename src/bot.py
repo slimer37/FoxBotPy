@@ -5,6 +5,8 @@ from twitchAPI.chat import Chat, EventData, ChatMessage
 
 from typing import List, Tuple
 
+import puns
+
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 
 class Bot:
@@ -25,11 +27,15 @@ class Bot:
     async def on_message(self, msg: ChatMessage):
         print(f'{msg.user.name}: {msg.text}')
         
-    async def start(self):
+        await self.punner.process_message(msg)
+        
+    async def start(self, punner: puns.Punner):
         # Log in
         twitch = await Twitch(self.id, self.secret)
         
         self.twitch = twitch
+        
+        self.punner = punner
 
         helper = UserAuthenticationStorageHelper(twitch, USER_SCOPE, auth_generator_func=custom_auth_gen)
         

@@ -1,5 +1,6 @@
 import asyncio
 from bot import Bot
+from puns import Punner
 import config as conf
 
 async def main():
@@ -13,9 +14,14 @@ async def main():
     secret = config['Client']['Secret']
     channel = config['User']['TargetChannel']
     
+    punPercentage = int(config['User']['PunChancePercentage'])
+    punFileCsv = 'puns.csv'
+    
     bot = Bot(id, secret, channel)
     
-    await bot.start()
+    punner = Punner(punPercentage, punFileCsv)
+    
+    await bot.start(punner)
     
     try:
         input('Press enter at any time to stop.\n')
