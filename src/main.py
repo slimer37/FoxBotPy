@@ -8,6 +8,7 @@ async def main():
     
     if config is None:
         print("Please enter the correct values into the empty config file.")
+        input()
         return
     
     id = config['Client']['ID']
@@ -30,4 +31,9 @@ async def main():
         await bot.stop()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f'\033[31m{e}\033[0m')
+        print("An error occurred. Press enter to exit.")
+        input()
