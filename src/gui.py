@@ -1,10 +1,16 @@
-from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget, QTextEdit, QPushButton, QGroupBox
+from PyQt6.QtWidgets import QApplication, QVBoxLayout, QWidget, QTextEdit, QPushButton, QGroupBox, QHBoxLayout, QLabel, QSizePolicy
 from PyQt6.QtCore import Qt
 import sys
 
 
-def createTextBoxWithClearButton(title: str):
+def createTextBoxWithClearButton(title: str, sizeFactor: int):
     group = QGroupBox(title)
+        
+    sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+    sizePolicy.setHorizontalStretch(sizeFactor)
+    
+    group.setSizePolicy(sizePolicy)
+    
     box = QVBoxLayout()
 
     textbox = QTextEdit()
@@ -35,18 +41,26 @@ class CaptureOutput:
 class Window(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(750, 400)
+        self.resize(800, 400)
         self.setWindowTitle('FoxBot by slimer37')
+        
+        vlayout = QVBoxLayout()
+        self.setLayout(vlayout)
+        
+        label = QLabel("FoxBot Control Panel")
+        vlayout.addWidget(label)
+        
+        vlayout.addWidget(label)
 
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-        layout.setDirection(QVBoxLayout.Direction.LeftToRight)
+        layout = QHBoxLayout()
 
-        chatGroup, self.chatbox = createTextBoxWithClearButton("Chat")
+        chatGroup, self.chatbox = createTextBoxWithClearButton("Chat", 3)
         layout.addWidget(chatGroup)
 
-        sysGroup, self.sysbox = createTextBoxWithClearButton("System")
+        sysGroup, self.sysbox = createTextBoxWithClearButton("System", 2)
         layout.addWidget(sysGroup)
+        
+        vlayout.addLayout(layout)
         
         sys.stdout = CaptureOutput(self.sysbox.insertPlainText)
 
