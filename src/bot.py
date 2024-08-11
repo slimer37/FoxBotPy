@@ -5,8 +5,6 @@ from twitchAPI.chat import Chat, EventData, ChatMessage, ChatCommand
 
 from typing import Callable, List, Tuple
 
-import csv
-
 import puns
 
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
@@ -25,7 +23,8 @@ class Bot:
         
         if replyCsv is not None:
             with open(replyCsv, 'r', newline='') as replyFile:
-                replyCommands = { row[0]:row[1] for row in csv.reader(replyFile) }
+                sep = '|'
+                replyCommands = { row[:row.index(sep)]:row[row.index(sep) + 1:] for row in replyFile.readlines() }
                 
             self.replies = replyCommands
 

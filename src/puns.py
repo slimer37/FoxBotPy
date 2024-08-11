@@ -1,15 +1,14 @@
 import random
-from typing import Callable
 from twitchAPI.chat import ChatMessage
-import csv
 import re
 
 class Punner:
     def __init__(self, punChancePercentage, punFileCsv):
         
         with open(punFileCsv, 'r', newline='') as csvFile:
-            self.pun_table: dict[str, str] = { row[0]:row[1] for row in csv.reader(csvFile) }
-            self.pun_pattern = re.compile('|'.join(re.escape(key) for key in self.pun_table.keys()))
+            sep = '|'
+            self.pun_table: dict[str, str] = { row[:row.index(sep)].lower():row[row.index(sep) + 1:] for row in csvFile.readlines() }
+            self.pun_pattern = re.compile('|'.join(re.escape(key) for key in self.pun_table.keys()), re.IGNORECASE)
             
         self.chance = punChancePercentage / 100
         
