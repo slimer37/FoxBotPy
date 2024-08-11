@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from bot import Bot
 from puns import Punner
 import config as conf
@@ -38,7 +39,7 @@ async def main():
 if __name__ == "__main__":
     try:
         asyncio.run(main())
-    except Exception as e:
-        print(f'\033[31m{e}\033[0m')
+    except Exception:
+        print(f'\033[31m{traceback.format_exc()}\033[0m')
         print("An error occurred. Press enter to exit.")
         input()
