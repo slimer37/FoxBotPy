@@ -16,9 +16,15 @@ class Punner:
         return random.random() < self.chance
     
     def _form_pun(self, message: str) -> str:
-        return self.pun_pattern.sub(lambda match: dict(self.pun_table)[match.group(0)], message)
+        if re.search(self.pun_pattern, message):
+            return self.pun_pattern.sub(lambda match: self.pun_table[match.group(0)], message)
+        else:
+            return None
         
     async def process_message(self, msg: ChatMessage):
         if not self._should_make_pun(): return
         
-        await msg.reply(self._form_pun(msg.text))
+        pun = self._form_pun(msg.text)
+        
+        if pun:
+            await msg.reply(pun)
