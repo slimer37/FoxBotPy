@@ -36,19 +36,19 @@ class Bot:
         print(f'Connected to {self.channel}.')
         
     async def on_message(self, msg: ChatMessage):
-        self.chatOut(f'{msg.user.name}: {msg.text}')
+        self.chatOut(f'<b>{msg.user.name}</b>: {msg.text}')
         
         pun = await self.punner.process_message(msg)
         
         if pun:
-            self.chatOut(f'^ Replied with pun: {pun}')
+            self.chatOut(f'<i>^ Replied with pun: {pun}</i>')
         
     async def on_reply_command(self, cmd: ChatCommand):
         reply = self.replies[cmd.name]
         
         await cmd.reply(reply)
         
-        self.chatOut(f'v Received command "{cmd.name}" and replied with "{reply[:10] + "..." if len(reply) > 10 else ""}"')
+        self.chatOut(f'<i>v Received command "{cmd.name}" and replied with "{reply[:10] + "..." if len(reply) > 10 else ""}"</i>')
         
     async def start(self, punner: puns.Punner):
         # Log in

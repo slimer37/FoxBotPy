@@ -3,13 +3,12 @@ from PyQt6.QtCore import Qt
 import sys
 
 
-def createTextBoxWithClearButton(title: str, placeholderText: str = ''):
+def createTextBoxWithClearButton(title: str):
     group = QGroupBox(title)
     box = QVBoxLayout()
 
     textbox = QTextEdit()
     textbox.setReadOnly(True)
-    textbox.setPlainText(placeholderText)
     textbox.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
     box.addWidget(textbox)
