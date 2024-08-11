@@ -15,9 +15,23 @@ class Punner:
     def _should_make_pun(self) -> bool:
         return random.random() < self.chance
     
+    def replace_match(self, match):
+        original_text = match.group(0)
+        replacement_text = self.pun_table.get(original_text.lower(), original_text)
+
+        # Match the case
+        if original_text.isupper():
+            return replacement_text.upper()
+        elif original_text.islower():
+            return replacement_text.lower()
+        elif original_text.istitle():
+            return replacement_text.capitalize()
+        else:
+            return replacement_text
+    
     def _form_pun(self, message: str) -> str:
         if re.search(self.pun_pattern, message):
-            return self.pun_pattern.sub(lambda match: self.pun_table[match.group(0)], message)
+            return self.pun_pattern.sub(self.replace_match, message)
         else:
             return None
         
