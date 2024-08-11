@@ -79,11 +79,19 @@ class Bot:
         self.chat.stop()
         await self.twitch.close()
 
+import sys
+import os
+
 async def custom_auth_gen(twitch: 'Twitch', scopes: List[AuthScope]) -> Tuple[str, str]:
     auth = UserAuthenticator(twitch, scopes, force_verify=True)
     
+    if getattr(sys, 'frozen', False):
+        path = os.path.join(sys._MEIPASS, "document.html")
+    else:
+        path = "document.html"
+    
     # Set custom html
-    with open('document.html') as doc:
+    with open(path) as doc:
         auth.document = doc.read()
     
     return await auth.authenticate()
