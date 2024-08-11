@@ -49,7 +49,6 @@ class Window(QWidget):
         layout.addWidget(sysGroup)
         
         sys.stdout = CaptureOutput(self.sysbox.insertPlainText)
-        sys.stderr = sys.stdout
 
 app = QApplication(sys.argv)
     
