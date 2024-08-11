@@ -1,18 +1,23 @@
 from twitchAPI.twitch import Twitch
-from twitchAPI.oauth import UserAuthenticator
+from twitchAPI.oauth import UserAuthenticator, UserAuthenticationStorageHelper
 from twitchAPI.type import AuthScope
 
+from typing import List, Tuple
+
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
+
+async def custom_auth_gen(twitch: 'Twitch', scopes: List[AuthScope]) -> Tuple[str, str]:
+    auth = UserAuthenticator(twitch, scopes, force_verify=True)
+    
+    # Set custom html
+    with open('document.html') as doc:
+        auth.document = doc.read()
+    
+    return await auth.authenticate()
 
 async def startup(id, secret):
     twitch = await Twitch(id, secret)
 
-    auth = UserAuthenticator(twitch, USER_SCOPE, force_verify=False)
+    helper = UserAuthenticationStorageHelper(twitch, USER_SCOPE, auth_generator_func=custom_auth_gen)
     
-    with open('document.html') as doc:
-        auth.document = doc.read()
-        
-    # this will open your default browser and prompt you with the twitch verification website
-    token, refresh_token = await auth.authenticate()
-    # add User authentication
-    await twitch.set_user_authentication(token, USER_SCOPE, refresh_token)
+    await helper.bind()
