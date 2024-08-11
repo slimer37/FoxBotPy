@@ -1,21 +1,31 @@
 from twitchAPI.twitch import Twitch
 from twitchAPI.oauth import UserAuthenticator, UserAuthenticationStorageHelper
 from twitchAPI.type import AuthScope, ChatEvent
-from twitchAPI.chat import Chat, EventData, ChatMessage
+from twitchAPI.chat import Chat, EventData, ChatMessage, ChatCommand
 
 from typing import List, Tuple
+
+import csv
 
 import puns
 
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 
 class Bot:
-    def __init__(self, id, secret, channel):
+    def __init__(self, id, secret, channel, replyCsv):
         global TARGET_CHANNEL
         
         self.id = id
         self.channel = channel
         self.secret = secret
+        
+        self.replies = {}
+        
+        if replyCsv is not None:
+            with open(replyCsv, 'r', newline='') as replyFile:
+                replyCommands = { row[0]:row[1] for row in csv.reader(replyFile) }
+                
+            self.replies = replyCommands
 
     async def on_ready(self, ready_event: EventData):
         print('Bot is ready.')
@@ -28,6 +38,9 @@ class Bot:
         print(f'{msg.user.name}: {msg.text}')
         
         await self.punner.process_message(msg)
+        
+    async def on_reply_command(self, cmd: ChatCommand):
+        await cmd.reply(self.replies[cmd.name])
         
     async def start(self, punner: puns.Punner):
         # Log in
@@ -46,6 +59,9 @@ class Bot:
         
         chat.register_event(ChatEvent.READY, self.on_ready)
         chat.register_event(ChatEvent.MESSAGE, self.on_message)
+        
+        for key in self.replies.keys():
+            chat.register_command(key, self.on_reply_command)
         
         chat.start()
         

@@ -17,7 +17,7 @@ async def main():
     punPercentage = int(config['User']['PunChancePercentage'])
     punFileCsv = 'puns.csv'
     
-    bot = Bot(id, secret, channel)
+    bot = Bot(id, secret, channel, 'replies.csv')
     
     punner = Punner(punPercentage, punFileCsv)
     
