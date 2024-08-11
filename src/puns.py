@@ -22,7 +22,7 @@ class Punner:
             return None
         
     async def process_message(self, msg: ChatMessage):
-        if not self._should_make_pun(): return
+        if msg.text.startswith('!') or not self._should_make_pun(): return
         
         pun = self._form_pun(msg.text)
         
