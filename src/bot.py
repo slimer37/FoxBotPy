@@ -2,19 +2,10 @@ from twitchAPI.twitch import Twitch
 from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.type import AuthScope
 
-import configparser
-
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-APP_ID = config['Client']['ID']
-APP_SECRET = config['Client']['SECRET']
-TARGET_CHANNEL = config['User']['TargetChannel']
-
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 
-async def startup():
-    twitch = await Twitch(APP_ID, APP_SECRET)
+async def startup(id, secret):
+    twitch = await Twitch(id, secret)
 
     auth = UserAuthenticator(twitch, USER_SCOPE, force_verify=False)
     
