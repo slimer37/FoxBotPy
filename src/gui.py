@@ -49,17 +49,15 @@ class Window(QWidget):
         sysGroup, self.sysbox = createTextBoxWithClearButton("System")
         layout.addWidget(sysGroup)
         
-        sys.stdout = CaptureOutput(self.print)
+        sys.stdout = CaptureOutput(self.sysbox.insertPlainText)
+        sys.stderr = sys.stdout
 
-    def printInChat(self, message: str):
-        self.chatbox.append(message)
-
-    def print(self, message: str):
-        self.sysbox.insertPlainText(message)
-
-
-def rungui():
-    app = QApplication(sys.argv)
+app = QApplication(sys.argv)
+    
+def getwindow():
     window = Window()
+    return window
+
+def rungui(window: Window):
     window.show()
     return app.exec()

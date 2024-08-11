@@ -1,4 +1,5 @@
 import random
+from typing import Callable
 from twitchAPI.chat import ChatMessage
 import csv
 import re
@@ -28,3 +29,5 @@ class Punner:
         
         if pun:
             await msg.reply(pun)
+            
+        return pun

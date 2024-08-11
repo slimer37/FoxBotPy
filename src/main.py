@@ -20,14 +20,16 @@ async def main():
     punPercentage = int(config['User']['PunChancePercentage'])
     punFileCsv = 'puns.csv'
     
-    bot = Bot(id, secret, channel, 'replies.csv')
+    window = gui.getwindow()
+    
+    bot = Bot(id, secret, channel, 'replies.csv', window.chatbox.append)
     
     punner = Punner(punPercentage, punFileCsv)
     
     await bot.start(punner)
     
     try:
-        gui.rungui()
+        gui.rungui(window)
     finally:
         sys.stdout = sys.__stdout__
         print('Stopping...')

@@ -3,7 +3,7 @@ from twitchAPI.oauth import UserAuthenticator, UserAuthenticationStorageHelper
 from twitchAPI.type import AuthScope, ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatCommand
 
-from typing import List, Tuple
+from typing import Callable, List, Tuple
 
 import csv
 
@@ -12,12 +12,14 @@ import puns
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 
 class Bot:
-    def __init__(self, id, secret, channel, replyCsv):
+    def __init__(self, id, secret, channel, replyCsv, chatOut: Callable[[str], None]=print):
         global TARGET_CHANNEL
         
         self.id = id
         self.channel = channel
         self.secret = secret
+        
+        self.chatOut = chatOut
         
         self.replies = {}
         
@@ -35,12 +37,19 @@ class Bot:
         print(f'Connected to {self.channel}.')
         
     async def on_message(self, msg: ChatMessage):
-        print(f'{msg.user.name}: {msg.text}')
+        self.chatOut(f'{msg.user.name}: {msg.text}')
         
-        await self.punner.process_message(msg)
+        pun = await self.punner.process_message(msg)
+        
+        if pun:
+            self.chatOut(f'^ Replied with pun: {pun}')
         
     async def on_reply_command(self, cmd: ChatCommand):
-        await cmd.reply(self.replies[cmd.name])
+        reply = self.replies[cmd.name]
+        
+        await cmd.reply(reply)
+        
+        self.chatOut(f'v Received command "{cmd.name}" and replied with "{reply[:10] + "..." if len(reply) > 10 else ""}"')
         
     async def start(self, punner: puns.Punner):
         # Log in
