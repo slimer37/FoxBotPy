@@ -1,9 +1,18 @@
 import asyncio
 import bot
-import config
+import config as conf
 
 def main():
-    id, secret, channel = config.read_config()
+    config = conf.read_config()
+    
+    if config is None:
+        print("Please enter the correct values into the empty config file.")
+        return
+    
+    id = config['Client']['ID']
+    secret = config['Client']['Secret']
+    channel = config['User']['TargetChannel']
+    
     asyncio.run(bot.startup(id, secret, channel))
 
 if __name__ == "__main__":

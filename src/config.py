@@ -16,8 +16,4 @@ def read_config():
         print("No config file was found. An empty one has been created.")
         return None
     
-    id = config['Client']['ID']
-    secret = config['Client']['SECRET']
-    channel = config['User']['TargetChannel']
-    
-    return id, secret, channel
+    return config
