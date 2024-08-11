@@ -2,6 +2,8 @@ import asyncio
 from bot import Bot
 from puns import Punner
 import config as conf
+import gui
+import sys
 
 async def main():
     config = conf.read_config()
@@ -25,8 +27,9 @@ async def main():
     await bot.start(punner)
     
     try:
-        input('Press enter at any time to stop.\n')
+        gui.rungui()
     finally:
+        sys.stdout = sys.__stdout__
         print('Stopping...')
         await bot.stop()
 
