@@ -63,7 +63,9 @@ class CaptureOutput:
     def write(self, message: str):
         # use callback and print to normal stdout
         self.textDest(message)
-        sys.__stdout__.write(message)
+        
+        if not getattr(sys, 'frozen', False):
+            sys.__stdout__.write(message)
 
 class Window(QWidget):
     def __init__(self):
@@ -92,7 +94,7 @@ class Window(QWidget):
         
         vlayout.addLayout(layout)
         
-        sys.stdout = CaptureOutput(self.sysbox.insertPlainText)
+        sys.stderr = sys.stdout = CaptureOutput(self.sysbox.insertPlainText)
 
 app = QApplication(sys.argv)
 
