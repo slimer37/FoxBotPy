@@ -11,8 +11,6 @@ USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
 
 class Bot:
     def __init__(self, id, secret, channel, replyCsv, chatOut: Callable[[str], None]=print):
-        global TARGET_CHANNEL
-        
         self.id = id
         self.channel = channel
         self.secret = secret
