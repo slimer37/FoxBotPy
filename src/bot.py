@@ -27,11 +27,12 @@ class Bot:
             self.replies = replyCommands
 
     async def on_ready(self, ready_event: EventData):
-        print('Bot is ready.')
+        print(f'Bot is ready. Attempting to connect to {self.channel}...')
         
-        await ready_event.chat.join_room(self.channel)
+        nojoin = await ready_event.chat.join_room(self.channel)
         
-        print(f'Connected to {self.channel}.')
+        if len(nojoin) == 0: print(f'Connected to {self.channel}.')
+        else: print('Timed out.')
         
     async def on_message(self, msg: ChatMessage):
         self.chatOut(f'<b>{msg.user.name}</b>: {msg.text}')
