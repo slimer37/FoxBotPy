@@ -6,7 +6,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "pyinstaller src/main.py --noconfirm --noconsole --add-data src/document.html:. ; cp src/config.ini dist/main ; cp src/*.csv dist/main"
+            "command": "pyinstaller src/main.py --noconfirm --noconsole --add-data src/document.html:. --add-data src/Rowdies:Rowdies ; cp src/config.ini dist/main ; cp src/*.csv dist/main"
         }
     ]
 }
