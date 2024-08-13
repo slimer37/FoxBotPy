@@ -3,6 +3,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFontDatabase
 import sys
 
+from data import APP_VERSION
+
 
 def createTextBoxWithClearButton(title: str, sizeFactor: int):
     group = QGroupBox(title)
@@ -72,7 +74,7 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
         self.resize(800, 400)
-        self.setWindowTitle('FoxBot by slimer37')
+        self.setWindowTitle(f'FoxBot by slimer37 ({APP_VERSION})')
         
         self.setStyleSheet('background-color: #1E0342; color: #f4ff7f')
         
