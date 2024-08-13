@@ -5,6 +5,8 @@ from twitchAPI.chat import Chat, EventData, ChatMessage, ChatCommand
 
 from typing import Callable, List, Tuple
 
+import userdb
+
 import puns
 
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT]
@@ -35,7 +37,12 @@ class Bot:
         else: print('Timed out.')
         
     async def on_message(self, msg: ChatMessage):
-        self.chatOut(f'<b>{msg.user.name}</b>: {msg.text}')
+        ignored = userdb.user_exists(msg.user.id)
+        
+        self.chatOut(('(ignored) ' if ignored else '') + f'<b>{msg.user.name}</b>: {msg.text}')
+        
+        # ignore stored users
+        if ignored: return
         
         pun = await self.punner.process_message(msg)
         
@@ -69,6 +76,9 @@ class Bot:
         
         for key in self.replies.keys():
             chat.register_command(key, self.on_reply_command)
+            
+        chat.register_command('ignore', self.add_to_ignore_list)
+        chat.register_command('unignore', self.remove_from_ignore_list)
         
         chat.start()
         
@@ -77,6 +87,22 @@ class Bot:
     async def stop(self):
         self.chat.stop()
         await self.twitch.close()
+        
+    async def add_to_ignore_list(self, cmd: ChatCommand):
+        if userdb.add_user(cmd.user.id):
+            self.chatOut(f'<i>Ignored {cmd.user.name}</i>')
+            await cmd.reply('Ignored.')
+        else:
+            self.chatOut(f'<i>{cmd.user.name} is already ignored.</i>')
+        
+    async def remove_from_ignore_list(self, cmd: ChatCommand):
+        if userdb.remove_user(cmd.user.id):
+            await cmd.reply('Unignored.')
+            self.chatOut(f'<i>Unignored {cmd.user.name}</i>')
+        else:
+            self.chatOut(f'<i>{cmd.user.name} is already not ignored.</i>')
+            
+        
 
 import sys
 import os

@@ -5,6 +5,7 @@ from puns import Punner
 import config as conf
 import gui
 import sys
+import userdb
 
 async def main():
     config = conf.read_config()
@@ -46,3 +47,5 @@ if __name__ == "__main__":
         print(f'\033[31m{traceback.format_exc()}\033[0m')
         print("An error occurred. Press enter to exit.")
         input()
+    finally:
+        userdb.save()
