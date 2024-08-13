@@ -24,7 +24,7 @@ class Bot:
         if replyCsv is not None:
             with open(replyCsv, 'r', newline='') as replyFile:
                 sep = '|'
-                replyCommands = { row[:row.index(sep)]:row[row.index(sep) + 1:] for row in replyFile.readlines() }
+                replyCommands = { row[:row.index(sep)].strip():row[row.index(sep) + 1:].strip() for row in replyFile.readlines() }
                 
             self.replies = replyCommands
 

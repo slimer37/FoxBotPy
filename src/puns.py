@@ -7,7 +7,7 @@ class Punner:
         
         with open(punFileCsv, 'r', newline='') as csvFile:
             sep = '|'
-            self.pun_table: dict[str, str] = { row[:row.index(sep)].lower():row[row.index(sep) + 1:] for row in csvFile.readlines() }
+            self.pun_table: dict[str, str] = { row[:row.index(sep)].lower().strip():row[row.index(sep) + 1:].strip() for row in csvFile.readlines() }
             self.pun_pattern = re.compile('|'.join(re.escape(key) for key in self.pun_table.keys()), re.IGNORECASE)
             
         self.chance = punChancePercentage / 100
