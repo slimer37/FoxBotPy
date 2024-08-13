@@ -47,7 +47,7 @@ class Bot:
         pun = await self.punner.process_message(msg)
         
         if pun:
-            self.chatOut(f'<i>^ Replied with pun: {pun}</i>')
+            self.chatOut(f'<i>Replied with pun: {pun}</i>')
         
     async def on_reply_command(self, cmd: ChatCommand):
         reply = self.replies[cmd.name]
