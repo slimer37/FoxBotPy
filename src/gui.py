@@ -64,7 +64,8 @@ class CaptureOutput:
         # use callback and print to normal stdout
         self.textDest(message)
         
-        if not getattr(sys, 'frozen', False):
+        # copy to stdout if it exists
+        if sys.__stdout__:
             sys.__stdout__.write(message)
 
 class Window(QWidget):
