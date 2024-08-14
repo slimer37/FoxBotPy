@@ -32,11 +32,9 @@ async def main():
     
     try:
         gui.rungui(window)
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
     finally:
-        if not getattr(sys, 'frozen', False):
-            sys.stdout = sys.__stdout__
-            sys.stderr = sys.__stderr__
-            
         print('Stopping...')
         await bot.stop()
 
