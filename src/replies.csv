@@ -1,2 +1,3 @@
-command|what to reply with
+// Sample comment
+command(count)|this command has been called $count$ time$s$
 discord|some discord link

@@ -6,6 +6,7 @@ from twitchAPI.chat import Chat, EventData, ChatMessage, ChatCommand
 from typing import Callable, List, Tuple
 
 import userdb
+import datakeeper
 
 import puns
 
@@ -21,10 +22,37 @@ class Bot:
         
         self.replies = {}
         
+        self.counters = {}
+        
         if replyCsv is not None:
             with open(replyCsv, 'r', newline='') as replyFile:
                 sep = '|'
-                replyCommands = { row[:row.index(sep)].strip():row[row.index(sep) + 1:].strip() for row in replyFile.readlines() }
+                
+                replyCommands = {}
+                
+                for row in replyFile.readlines():
+                    
+                    # Comments with //
+                    if row.startswith('//') or sep not in row:
+                        continue
+                    
+                    command = row[:row.index(sep)].strip()
+                    
+                    # if ends in "(args)"
+                    if '(' in command and ')' in command and command.index(')') == len(command) - 1:
+                        openParentheses = command.index('(')
+                        
+                        args = command[openParentheses + 1:-1]
+                        
+                        command = command[:openParentheses]
+                        
+                        if 'count' in args:
+                            saved = datakeeper.retrieveData(command, '0')
+                            self.counters[command] = int(saved)
+                    
+                    replyMessage = row[row.index(sep) + 1:].strip()
+                    
+                    replyCommands[command] = replyMessage
                 
             self.replies = replyCommands
 
@@ -51,6 +79,18 @@ class Bot:
         
     async def on_reply_command(self, cmd: ChatCommand):
         reply = self.replies[cmd.name]
+        
+        if cmd.name in self.counters.keys():
+            count = self.counters[cmd.name] + 1
+            
+            self.counters[cmd.name] = count
+            
+            datakeeper.updateData(cmd.name, str(count))
+            
+            reply = reply.replace('$count$', str(count))
+            
+            # Plural s
+            reply = reply.replace('$s$', '' if count == 1 else 's')
         
         await cmd.reply(reply)
         
