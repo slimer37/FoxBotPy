@@ -16,7 +16,10 @@ class Punner:
                 if row.startswith('//') or sep not in row:
                     continue
                 
-                self.pun_table[row[:row.index(sep)].lower().strip()] = row[row.index(sep) + 1:].strip()
+                to_replace = row[:row.index(sep)].lower().strip()
+                replacement = row[row.index(sep) + 1:].strip()
+                
+                self.pun_table[to_replace] = replacement
             
             self.pun_pattern = re.compile('|'.join(re.escape(key) for key in self.pun_table.keys()), re.IGNORECASE)
             

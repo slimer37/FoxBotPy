@@ -35,7 +35,10 @@ class Bot:
                     if row.startswith('//') or sep not in row:
                         continue
                     
-                    replyCommands[row[:row.index(sep)].strip()] = row[row.index(sep) + 1:].strip()
+                    command = row[:row.index(sep)].strip()
+                    replyMessage = row[row.index(sep) + 1:].strip()
+                    
+                    replyCommands[command] = replyMessage
                 
                 removeList = []
                 
