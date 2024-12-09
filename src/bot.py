@@ -21,10 +21,37 @@ class Bot:
         
         self.replies = {}
         
+        self.counters = {}
+        
         if replyCsv is not None:
             with open(replyCsv, 'r', newline='') as replyFile:
                 sep = '|'
                 replyCommands = { row[:row.index(sep)].strip():row[row.index(sep) + 1:].strip() for row in replyFile.readlines() }
+                
+                removeList = []
+                
+                for command in replyCommands.keys():
+                    # if ends in "(args)"
+                    if '(' in command and ')' in command and command.index(')') == len(command) - 1:
+                        openParentheses = command.index('(')
+                        
+                        oldCommand = command
+                        
+                        args = command[openParentheses + 1:-1]
+                        
+                        trimmedCommand = command[:openParentheses]
+                        
+                        removeList.append((oldCommand, trimmedCommand))
+                        
+                        if 'count' in args:
+                            self.counters[trimmedCommand] = 0
+                        
+                for c, newC in removeList:
+                    message = replyCommands[c]
+                    
+                    del replyCommands[c]
+                    
+                    replyCommands[newC] = message
                 
             self.replies = replyCommands
 
@@ -51,6 +78,10 @@ class Bot:
         
     async def on_reply_command(self, cmd: ChatCommand):
         reply = self.replies[cmd.name]
+        
+        if cmd.name in self.counters.keys():
+            self.counters[cmd.name] += 1
+            reply = reply.replace('$count$', str(self.counters[cmd.name]))
         
         await cmd.reply(reply)
         
