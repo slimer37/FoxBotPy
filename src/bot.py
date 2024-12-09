@@ -26,7 +26,16 @@ class Bot:
         if replyCsv is not None:
             with open(replyCsv, 'r', newline='') as replyFile:
                 sep = '|'
-                replyCommands = { row[:row.index(sep)].strip():row[row.index(sep) + 1:].strip() for row in replyFile.readlines() }
+                
+                replyCommands = {}
+                
+                for row in replyFile.readlines():
+                    
+                    # Comments with //
+                    if row.startswith('//') or sep not in row:
+                        continue
+                    
+                    replyCommands[row[:row.index(sep)].strip()] = row[row.index(sep) + 1:].strip()
                 
                 removeList = []
                 
