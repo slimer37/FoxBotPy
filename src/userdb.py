@@ -9,7 +9,7 @@ if os.path.exists(ignorefile):
         ignorelist = set(f.readlines())
 
 print(f'Loaded {len(ignorelist)} ignored users.')
-    
+
 
 def add_user(id: str):
     if id in ignorelist: return False
