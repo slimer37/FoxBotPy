@@ -36,34 +36,21 @@ class Bot:
                         continue
                     
                     command = row[:row.index(sep)].strip()
-                    replyMessage = row[row.index(sep) + 1:].strip()
                     
-                    replyCommands[command] = replyMessage
-                
-                removeList = []
-                
-                for command in replyCommands.keys():
                     # if ends in "(args)"
                     if '(' in command and ')' in command and command.index(')') == len(command) - 1:
                         openParentheses = command.index('(')
                         
-                        oldCommand = command
-                        
                         args = command[openParentheses + 1:-1]
                         
-                        trimmedCommand = command[:openParentheses]
-                        
-                        removeList.append((oldCommand, trimmedCommand))
+                        command = command[:openParentheses]
                         
                         if 'count' in args:
-                            self.counters[trimmedCommand] = 0
-                        
-                for c, newC in removeList:
-                    message = replyCommands[c]
+                            self.counters[command] = 0
                     
-                    del replyCommands[c]
+                    replyMessage = row[row.index(sep) + 1:].strip()
                     
-                    replyCommands[newC] = message
+                    replyCommands[command] = replyMessage
                 
             self.replies = replyCommands
 
