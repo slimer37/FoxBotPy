@@ -82,6 +82,9 @@ class Bot:
         if cmd.name in self.counters.keys():
             self.counters[cmd.name] += 1
             reply = reply.replace('$count$', str(self.counters[cmd.name]))
+            
+            # Plural s
+            reply = reply.replace('$s$', '' if self.counters[cmd.name] == 1 else 's')
         
         await cmd.reply(reply)
         
