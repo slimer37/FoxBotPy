@@ -1,3 +1,3 @@
 // Sample comment
-command(count)|this command has been called $count$ time$s$
+command(count)|this command has been called $count$ time$s$|count
 discord|some discord link

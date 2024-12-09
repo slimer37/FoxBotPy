@@ -6,6 +6,7 @@ import config as conf
 import gui
 import sys
 import userdb
+import datakeeper
 
 async def main():
     config = conf.read_config()
@@ -47,3 +48,4 @@ if __name__ == "__main__":
         input()
     finally:
         userdb.save()
+        datakeeper.writeAll()

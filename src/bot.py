@@ -6,6 +6,7 @@ from twitchAPI.chat import Chat, EventData, ChatMessage, ChatCommand
 from typing import Callable, List, Tuple
 
 import userdb
+import datakeeper
 
 import puns
 
@@ -46,7 +47,8 @@ class Bot:
                         command = command[:openParentheses]
                         
                         if 'count' in args:
-                            self.counters[command] = 0
+                            saved = datakeeper.retrieveData(command, '0')
+                            self.counters[command] = int(saved)
                     
                     replyMessage = row[row.index(sep) + 1:].strip()
                     
@@ -79,11 +81,16 @@ class Bot:
         reply = self.replies[cmd.name]
         
         if cmd.name in self.counters.keys():
-            self.counters[cmd.name] += 1
-            reply = reply.replace('$count$', str(self.counters[cmd.name]))
+            count = self.counters[cmd.name] + 1
+            
+            self.counters[cmd.name] = count
+            
+            datakeeper.updateData(cmd.name, str(count))
+            
+            reply = reply.replace('$count$', str(count))
             
             # Plural s
-            reply = reply.replace('$s$', '' if self.counters[cmd.name] == 1 else 's')
+            reply = reply.replace('$s$', '' if count == 1 else 's')
         
         await cmd.reply(reply)
         
