@@ -12,9 +12,7 @@ async def main():
     config = conf.read_config()
     
     if config is None:
-        print("Please enter the correct values into the empty config file.")
-        input()
-        return
+        raise Exception("Please enter the correct values into the empty config file.")
     
     id = config['Client']['ID']
     secret = config['Client']['Secret']
