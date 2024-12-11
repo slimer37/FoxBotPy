@@ -43,7 +43,7 @@ if __name__ == "__main__":
     except Exception:
         print(f'\033[31m{traceback.format_exc()}\033[0m')
         print("An error occurred. Press enter to exit.")
-        input()
+        raise
     finally:
         userdb.save()
         datakeeper.writeAll()
