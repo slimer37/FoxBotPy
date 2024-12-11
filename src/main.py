@@ -12,9 +12,7 @@ async def main():
     config = conf.read_config()
     
     if config is None:
-        print("Please enter the correct values into the empty config file.")
-        input()
-        return
+        raise Exception("Please enter the correct values into the empty config file.")
     
     id = config['Client']['ID']
     secret = config['Client']['Secret']
@@ -45,7 +43,7 @@ if __name__ == "__main__":
     except Exception:
         print(f'\033[31m{traceback.format_exc()}\033[0m')
         print("An error occurred. Press enter to exit.")
-        input()
+        raise
     finally:
         userdb.save()
         datakeeper.writeAll()
