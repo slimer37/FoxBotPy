@@ -14,7 +14,7 @@ def write_default() -> None:
         config.write(config_file)
 
 
-def read_config() -> configparser.ConfigParser:
+def read_config() -> configparser.ConfigParser | None:
     config = configparser.ConfigParser()
 
     if len(config.read('config.ini')) == 0:
