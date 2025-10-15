@@ -81,6 +81,13 @@ class Bot:
         
     async def on_reply_command(self, cmd: ChatCommand):
         reply: str = self.replies[cmd.name]
+
+        if match := re.search(r'\$rng\((\d+),(\d+)\)\$', reply):
+            min_val = int(match.group(1))
+            max_val = int(match.group(2))
+            import random
+            rng_value = random.randint(min_val, max_val)
+            reply = reply.replace(match.group(0), str(rng_value))
         
         if cmd.name in self.counters.keys():
             count = self.counters[cmd.name] + 1
@@ -93,13 +100,6 @@ class Bot:
             
             # Plural s
             reply = reply.replace('$s$', '' if count == 1 else 's')
-
-        if match := re.match(r'\$rng\((\d+),(\d+)\)\$', reply):
-            min_val = int(match.group(1))
-            max_val = int(match.group(2))
-            import random
-            rng_value = random.randint(min_val, max_val)
-            reply = reply.replace(match.group(0), str(rng_value))
         
         await cmd.reply(reply)
         
