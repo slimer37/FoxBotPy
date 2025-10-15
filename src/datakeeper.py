@@ -14,7 +14,7 @@ if os.path.exists(dataFilePath):
 def updateData(key: str, value: str) -> None:
     data[key] = value
 
-def retrieveData(key: str, defaultValue = None) -> str | None:
+def retrieveData(key: str, defaultValue: str = "") -> str:
     return data.get(key, defaultValue)
 
 def writeAll():
