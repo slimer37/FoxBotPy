@@ -1,8 +1,7 @@
-import configparser
-
+from configparser import ConfigParser
 
 def write_default() -> None:
-    config = configparser.ConfigParser()
+    config = ConfigParser()
     config['User'] = {}
     config['User']['TargetChannel'] = 'Some username'
     config['User']['PunChancePercentage'] = '50'
@@ -14,8 +13,8 @@ def write_default() -> None:
         config.write(config_file)
 
 
-def read_config() -> configparser.ConfigParser | None:
-    config = configparser.ConfigParser()
+def read_config() -> ConfigParser | None:
+    config = ConfigParser()
 
     if len(config.read('config.ini')) == 0:
         write_default()
