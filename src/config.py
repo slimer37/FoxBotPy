@@ -8,12 +8,12 @@ def config_file_exists() -> bool:
 
 def write_default_config() -> None:
     config = ConfigParser()
-    config['User'] = {}
-    config['User']['TargetChannel'] = 'Some username'
-    config['User']['PunChancePercentage'] = '50'
-    config['Client'] = {}
-    config['Client']['ID'] = 'The app ID'
-    config['Client']['Secret'] = 'The app secret'
+    config['Client'] = {
+        'TargetChannel': 'Some username',
+        'ID': 'The app ID',
+        'Secret': 'The app secret'
+    }
+    config.add_section('Custom')
 
     with open(config_file_path, 'w') as config_file:
         config.write(config_file)

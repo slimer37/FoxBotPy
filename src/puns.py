@@ -1,10 +1,11 @@
 import random
 from twitchAPI.chat import ChatMessage
+from configparser import ConfigParser
 import re
 
 class Punner:
-    def __init__(self, punChancePercentage, punFileCsv):
-        
+    def __init__(self, config: ConfigParser):
+        punFileCsv = config['Custom'].get('PunFileCSV', 'puns.csv')
         with open(punFileCsv, 'r', newline='') as csvFile:
             sep = '|'
             
@@ -22,8 +23,8 @@ class Punner:
                 self.pun_table[to_replace] = replacement
             
             self.pun_pattern = re.compile('|'.join(re.escape(key) for key in self.pun_table.keys()), re.IGNORECASE)
-            
-        self.chance = punChancePercentage / 100
+        
+        self.chance = int(config['Custom'].get('PunChancePercentage', '50')) / 100
         
     def _should_make_pun(self) -> bool:
         return random.random() < self.chance
@@ -42,7 +43,7 @@ class Punner:
         else:
             return replacement_text
     
-    def _form_pun(self, message: str) -> str:
+    def _form_pun(self, message: str) -> str | None:
         if re.search(self.pun_pattern, message):
             return self.pun_pattern.sub(self.replace_match, message)
         else:

@@ -21,16 +21,13 @@ async def main():
     id = config['Client']['ID']
     secret = config['Client']['Secret']
     channel = config['User']['TargetChannel']
-    
-    punPercentage = int(config['User']['PunChancePercentage'])
-    punFileCsv = 'puns.csv'
 
     window = gui.getwindow()
 
     bot = Bot(id, secret, channel, 'replies.csv', window.chatbox.append)
-    
-    punner = Punner(punPercentage, punFileCsv)
-    
+
+    punner = Punner(config)
+
     await bot.start(punner)
 
     try:
