@@ -19,8 +19,8 @@ async def main():
     config: ConfigParser = conf.read_config()
 
     id = config['Client']['ID']
-    secret = config['Client']['Secret']
-    channel = config['User']['TargetChannel']
+    secret = config['Client'].get('Secret', None)
+    channel = config['Client']['TargetChannel']
 
     window = gui.getwindow()
 
